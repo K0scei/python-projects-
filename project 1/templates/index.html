@@ -6,7 +6,7 @@
     <h1 class = 'main-txt'>Where we share, with anonimity.</h1>
 </head>
 <body>
-    <button class = 'login-btn'>Login</button>
-    <button class = 'signup-btn'>Sign Up</button>
+    <button class="login-btn" onclick="window.location.href= '{{ url_for('login') }}'">Login</button>
+    <button class='signup-btn' onclick="window.location.href= '{{ url_for('signup') }}'">Sign Up</button>
 </body>
 </html>

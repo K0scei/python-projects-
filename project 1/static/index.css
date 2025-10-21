@@ -23,10 +23,6 @@ body, html {
 	transform: translateX(-40px);
 }
 
-.login-btn:hover {
-	background-color: #6AB0FF;
-}
-
 .signup-btn {
 	padding: 20px 60px;
 	font-size: 24px;
@@ -41,8 +37,9 @@ body, html {
 	transform: translateX(+40px);
 }
 
-.signup-btn:hover {
-	background-color: #6AB0FF;
+.signup-btn:hover, .login-btn:hover {
+	color: #454545;
+	background-color: #FFFFFF;
 }
 
 .main-txt{

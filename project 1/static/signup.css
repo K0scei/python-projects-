@@ -1,0 +1,49 @@
+body, html {
+	height: 100%;
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #202020;
+	font-family: Arial, sans-serif;
+	position: relative;
+}
+
+form{
+	display: flex;
+	gap: 12px;
+	align-items: stretch;
+}
+
+.signup{
+	box-sizing: border-box;
+}
+
+input.signup{
+	width: 100%;
+	max-width: 180px;
+	text-align: center;
+	font-size: 18px;
+	padding: 24px;
+	background: rgba(255, 255, 255, 0.03);
+	border-radius: 8px;
+	border: 0;
+	margin-right: 20px;
+}
+
+input.signup::placeholder{
+	color: rgba(225, 225, 225, 0.2);
+}
+
+button.signup{
+	display: inline-block;
+	padding: 24px 28px;
+	font-size: 18px;
+	min-width: 140px;
+	border-radius: 6px;
+	cursor: pointer;
+	margin-left: 20px;
+	background: rgba(255, 255, 255, 0.03);
+	border: none;
+	color: rgba(255, 255, 255, 0.2);
+}
