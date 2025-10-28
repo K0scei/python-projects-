@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dosya Transferi</title>
+  <style>
+    body { font-family: Arial; margin: 40px; background: #fafafa; }
+    h2 { color: #333; }
+    .file-list { margin-top: 20px; }
+    .file-item { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>Dosya Yükle</h2>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" required>
+    <button type="submit">Yükle</button>
+  </form>
+
+  <h3>Yüklü Dosyalar:</h3>
+  <div class="file-list">
+    {% for f in files %}
+      <div class="file-item">
+        📄 {{ f }} — <a href="/download/{{ f }}">İndir</a>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+</body>
+</html>
