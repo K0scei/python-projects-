@@ -9,40 +9,7 @@ body, html {
 	position: relative;
 }
 
-.login-btn {
-	padding: 20px 60px;
-	font-size: 24px;
-	background-color: #454545;
-	color: #a8a8a8;
-	border: none;
-	border-radius: 10px;
-	cursor: pointer;
-	box-shadow: 0px 5px 10px rgba(0,0,0,0.3);
-	transition: 0.3s;
-
-	transform: translateX(-40px);
-}
-
-.signup-btn {
-	padding: 20px 60px;
-	font-size: 24px;
-	background-color: #454545;
-	color: #a8a8a8;
-	border: none;
-	border-radius: 10px;
-	cursor: pointer;
-	box-shadow: 0px 5px 10px rgba(0,0,0,0.3);
-	transition: 0.3s;
-
-	transform: translateX(+40px);
-}
-
-.signup-btn:hover, .login-btn:hover {
-	color: #454545;
-	background-color: #FFFFFF;
-}
-
-.main-txt{
+.main-header {
 	padding: 20px 60px;
 	font-size: 30px;
 	color: #a8a8a8;
@@ -54,4 +21,29 @@ body, html {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 10;
+}
+
+.home-button {
+	padding: 20px 60px;
+	font-size: 24px;
+	background-color: #454545;
+	color: #a8a8a8;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	box-shadow: 0px 5px 10px rgba(0,0,0,0.3);
+	transition: 0.3s;
+}
+
+.upload-file{
+	transform: translateX(-40px);
+}
+
+.inbox{
+	transform: translateX(+40px);
+}
+
+.home-button:hover, .inbox:hover{
+	color: #454545;
+	background-color: #FFFFFF;
 }

@@ -1,39 +1,40 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>AirShare | Upload</title>
-  <style>
-    body { font-family: Arial; margin: 40px; background: #fafafa; }
-    h2 { color: #333; }
-    .file-list { margin-top: 20px; }
-    .file-item { margin: 5px 0; }
-  </style>
-</head>
-<body>
-  <h2>Upload Your File</h2>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" required>
-    <button type="submit">Submit</button>
-  </form>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>AirShare | Upload</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='upload.css') }}">
+	</head>
+	<body>
+		<div class="title-container">
+			<h2 class="title">Upload Your File</h2>
+			<form action="/upload" method="post" enctype="multipart/form-data" class="forms">
+				<input type="file" name="file" class="file" required hidden>
+				<label for="file" class="upload-btn">Choose File</label>
+				<button type="submit" class="submit-btn">Submit</button>
+			</form>
+		</div>
 
-  <h3>Yüklü Dosyalar:</h3>
-  <div class="file-list">
-    {% for f in files %}
-      <div class="file-item">
-        📄 {{ f }} — <a href="/download/{{ f }}">İndir</a>
-      </div>
-    {% endfor %}
-  </div>
-
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-</body>
+		<div class="bottom-container">
+			<h3 class="bottom-title">Your Uploaded Files:</h3>
+			<div class="file-list">
+				{% for f in files %}
+				<div class="file-item">
+					📄 {{ f }}
+				</div>
+				{% endfor %}
+			</div>
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+				<ul>
+				{% for message in messages %}
+					<li class="message">{{ message }}</li>
+				{% endfor %}
+				</ul>
+				{% else %}
+					<p class="message">You have not uploaded any files yet!</p>
+				{% endif %}
+			{% endwith %}
+		</div>
+	</body>
 </html>

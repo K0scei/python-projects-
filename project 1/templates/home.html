@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html>
-	<body>
+	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
 		<title>AirShare | Home</title>
-		<p>Welcome, <strong>{{ username }}</strong>.</p>
+	</head>
+	<body>
+		<p class="main-header">Welcome, <strong>{{ username }}</strong>.</p>
+		<div class="buttons">
+			<button class="home-button upload-file" onclick="window.location.href= '{{ url_for('upload') }}'">Upload File</button>
+			<button class="home-button inbox">Inbox</button>
+		</div>
 	</body>
 </html>

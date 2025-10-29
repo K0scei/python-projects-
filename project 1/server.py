@@ -48,9 +48,35 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 def server():
 	return render_template("index.html")
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-	return render_template("login.html")
+	error = None
+
+	if request.method == 'POST':
+		from werkzeug.security import check_password_hash
+		provided_username = request.form.get('username', '').strip()
+		provided_password = request.form.get('password', '').strip()
+
+		with open('./data/userdata.json', "r", encoding='utf-8') as f:
+			data = json.load(f)
+			user = data["users"].get(provided_username)
+		if not user:
+			error = "No username given! Please check your inputs!"
+		else:
+			hashed_password = user["password"]
+		if not provided_password:
+			error = "No password given! Please check your inputs!"
+		elif not user:
+			error = "No user found with this username. Did you mean to sign in?"
+		elif not check_password_hash(hashed_password, provided_password):
+			error = "The password is wrong, please try again!"
+
+		if not error:
+			print(f"User {provided_password} has logged in!")
+			session['username'] = provided_username
+			return redirect(url_for('home'))
+
+	return render_template("login.html", error=error)
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -90,14 +116,14 @@ def signup():
 	return render_template("signup.html", error=error, username=username)
 
 
+@app.route("/upload")
+def upload():
+	return render_template("upload.html")
 
-# !!! ^use common whitespace (tab / 4 spaces)
 
 @app.route("/download/<filename>")
 def download(filename):
 	return send_from_directory(app.config["UPLOAD_FOLDER"], filename, as_attachment = True)
-if __name__ == "__main__":
-	app.run(host="0.0.0.0", port=8000, debug=True)
 
 # özgür allahın varsa biraz whitespace bırak bu ne ya
 
@@ -111,3 +137,8 @@ def home():
 def logout():
 	session.pop("username")
 	return redirect(url_for("login"))
+
+if __name__ == "__main__":
+	app.run(host="0.0.0.0", port=8000, debug=True)
+
+# !!! ^use common whitespace (tab / 4 spaces)
