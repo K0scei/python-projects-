@@ -7,7 +7,8 @@
 	<body>
 		<div class="input-group">
 			<form method="POST" action="{{url_for('signup')}}">
-				<input class="signup txt logintxt" type="text" placeholder="Username">
+				<input class="signup txt logintxt" type="text" name="username" placeholder="Username">
+				<input class="signup txt password txt" type="text" name="password" placeholder="Password">
 				{% if error %}
 					<p class="error-msg">{{ error }}</p>
 				{% endif %}

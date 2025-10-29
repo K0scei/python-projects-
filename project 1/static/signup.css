@@ -23,7 +23,7 @@ form{
 	position: relative;
 }
 
-input.signup{
+input.signup, input.password{
 	width: 100%;
 	max-width: 180px;
 	text-align: center;
@@ -35,7 +35,8 @@ input.signup{
 	margin-right: 20px;
 }
 
-input.signup::placeholder{
+
+input.signup::placeholder, input.password::placeholder{
 	color: rgba(225, 225, 225, 0.2);
 }
 
