@@ -19,6 +19,10 @@ form{
 	box-sizing: border-box;
 }
 
+.input-group{
+	position: relative;
+}
+
 input.signup{
 	width: 100%;
 	max-width: 180px;
@@ -35,7 +39,7 @@ input.signup::placeholder{
 	color: rgba(225, 225, 225, 0.2);
 }
 
-button.signup{
+button.submit-btn{
 	display: inline-block;
 	padding: 24px 28px;
 	font-size: 18px;
@@ -46,4 +50,16 @@ button.signup{
 	background: rgba(255, 255, 255, 0.03);
 	border: none;
 	color: rgba(255, 255, 255, 0.2);
+}
+
+.error-msg{
+	position: absolute;
+	color: rgba(180, 0, 0, 1);
+	font-size: 18px;
+	margin-top: 10px;
+	text-align: center;
+	bottom: -50px;
+	left: -35px;
+	white-space: nowrap;
+	overflow: visible;
 }
