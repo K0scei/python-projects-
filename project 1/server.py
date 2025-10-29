@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-from flask import Flask, request, send_from_directory, render_template, redirect, url_for, flash
+from flask import Flask, request, send_from_directory, render_template, redirect, url_for, flash, session
 import socket
 import os
 import threading
-=======
-from flask import Flask, render_template, request, url_for, redirect, session
-
->>>>>>> 78f7dde (Merge Conflict fixing)
 
 
 """"
@@ -59,8 +54,24 @@ def login():
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
-<<<<<<< HEAD
-	return render_template("signup.html")
+	error = None
+	username = ''
+
+	if request.method == 'POST':
+		username = request.form.get('username', '').strip()
+
+		if not username:
+			error = "The username can not be empty!"
+		elif len(username) < 4:
+			error = "The username should be more than 4 characters!"
+		elif len(username) > 12:
+			error = "The username should be less than 12 characters!"
+
+		if not error:
+			session['username'] = username
+			print(f"New user: {username}")
+			return redirect(url_for('home'))
+	return render_template("signup.html", error=error, username=username)
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
@@ -89,25 +100,7 @@ if __name__ == "__main__":
 	app.run(host="0.0.0.0", port=8000, debug=True)
 
 # özgür allahın varsa biraz whitespace bırak bu ne ya
-=======
-	error = None
-	username = ''
 
-	if request.method == 'POST':
-		username = request.form.get('username', '').strip()
-
-		if not username:
-			error = "The username can not be empty!"
-		elif len(username) < 4:
-			error = "The username should be more than 4 characters!"
-		elif len(username) > 12:
-			error = "The username should be less than 12 characters!"
-
-		if not error:
-			session['username'] = username
-			print(f"New user: {username}")
-			return redirect(url_for('home'))
-	return render_template("signup.html", error=error, username=username)
 
 @app.route("/home")
 def home():
@@ -118,4 +111,3 @@ def home():
 def logout():
 	session.pop("username")
 	return redirect(url_for("login"))
->>>>>>> 78f7dde (Merge Conflict fixing)
