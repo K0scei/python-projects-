@@ -106,7 +106,7 @@ def signup():
 					data = {"users":{}}
 
 			if username not in data["users"]:
-				data["users"][username] = {"password": hashed_password,"uploadids": [], 'downloadids':[]}
+				data["users"][username] = {"password": hashed_password, "uploadnames":[], "uploadids": [], "downloadnames": [], 'downloadids':[]}
 
 			with open('./data/userdata.json', "w", encoding='utf-8') as f:
 				json.dump(data, f, ensure_ascii=False, indent=4)
@@ -116,9 +116,49 @@ def signup():
 	return render_template("signup.html", error=error, username=username)
 
 
-@app.route("/upload")
+@app.route("/upload", methods = ["GET", "POST"])
 def upload():
-	return render_template("upload.html")
+	user = session.get("username") #is username
+	if not user:
+		flash("You must be logged in!")
+		return redirect(url_for('login'))
+
+	from werkzeug.utils import secure_filename
+	from uuid import uuid4
+
+	try:
+		with open('./data/userdata.json', "r", encoding='utf-8') as f:
+			data = json.load(f)
+	except(FileNotFoundError, json.JSONDecodeError):
+		data = {"users": {}}
+
+	user_data = data["users"][user]
+
+	if request.method == "POST":
+		file = request.files.get("file")
+		sendto = request.form.get("text")
+
+		if not file or file.filename == "":
+			flash("No file selected!")
+			return render_template("upload.html", file=None, sendto=None, files=user_data["uploadnames"])
+		else:
+			filename = secure_filename(file.filename)
+			render_template("upload.html", file=filename, sendto=None, files=user_data["uploadnames"])
+
+
+		if not sendto or sendto == '':
+			flash("Please specify who to send!")
+			return render_template("upload.html", file=filename, sendto=None, files=user_data["uploadnames"])
+
+		elif not sendto in data["users"]:
+			flash("The person you are trying to send does NOT have a account!")
+			return render_template("upload.html", file=None, sendto=None, files=user_data["uploadnames"])
+
+		user_data["uploadnames"].append({"name": filename, "sendto": sendto, "uuid": uuid4()})
+
+		return render_template("upload.html", file=filename, sendto=sendto, files=user_data["uploadnames"])
+
+	return render_template("upload.html", file=None, sendto=None, files=user_data["uploadnames"])
 
 
 @app.route("/download/<filename>")

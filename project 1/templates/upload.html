@@ -9,32 +9,34 @@
 		<div class="title-container">
 			<h2 class="title">Upload Your File</h2>
 			<form action="/upload" method="post" enctype="multipart/form-data" class="forms">
-				<input type="file" name="file" class="file" required hidden>
+				<input type="file" name="file" class="file" id="file" required hidden>
 				<label for="file" class="upload-btn">Choose File</label>
+        <input type="text" name="text" class="upload-txt" placeholder="Send to...">
 				<button type="submit" class="submit-btn">Submit</button>
+        <p class="error-msg">
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {{ messages[0] }}
+            {% endif %}
+          {% endwith %}
+        </p>
 			</form>
 		</div>
 
 		<div class="bottom-container">
-			<h3 class="bottom-title">Your Uploaded Files:</h3>
-			<div class="file-list">
-				{% for f in files %}
-				<div class="file-item">
-					📄 {{ f }}
-				</div>
-				{% endfor %}
-			</div>
-			{% with messages = get_flashed_messages() %}
-				{% if messages %}
-				<ul>
-				{% for message in messages %}
-					<li class="message">{{ message }}</li>
-				{% endfor %}
-				</ul>
-				{% else %}
-					<p class="message">You have not uploaded any files yet!</p>
-				{% endif %}
-			{% endwith %}
+      <h3 class="bottom-title">Uploaded File: <strong>{{file}}</strong></h3>
+			<h3 class="bottom-title upload-txt2">Your Uploaded Files:</h3>
+      <div class="file-list">
+      {% if files %}
+          {% for f in files %}
+          <div class="file-item">
+              📄 {{ f }}
+          </div>
+          {% endfor %}
+      {% else %}
+          <p class="message">You have not uploaded any files yet!</p>
+      {% endif %}
+      </div>
 		</div>
 	</body>
 </html>
