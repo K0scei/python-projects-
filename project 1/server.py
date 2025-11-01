@@ -143,9 +143,6 @@ def upload():
 			return render_template("upload.html", file=None, sendto=None, files=user_data["uploadnames"])
 		else:
 			filename = secure_filename(file.filename)
-			render_template("upload.html", file=filename, sendto=None, files=user_data["uploadnames"])
-
-
 		if not sendto or sendto == '':
 			flash("Please specify who to send!")
 			return render_template("upload.html", file=filename, sendto=None, files=user_data["uploadnames"])
@@ -154,7 +151,14 @@ def upload():
 			flash("The person you are trying to send does NOT have a account!")
 			return render_template("upload.html", file=None, sendto=None, files=user_data["uploadnames"])
 
-		user_data["uploadnames"].append({"name": filename, "sendto": sendto, "uuid": uuid4()})
+		sendto_data = data["users"].get(sendto)
+
+		sendto_data["downloadnames"].append({"name": filename, "sendto": sendto, "uuid": str(uuid4())})
+
+		user_data["uploadnames"].append({"name": filename, "sendto": sendto, "uuid": str(uuid4())})
+
+		with open('./data/userdata.json', "w", encoding='utf-8') as f:
+			json.dump(data, f, indent=4)
 
 		return render_template("upload.html", file=filename, sendto=sendto, files=user_data["uploadnames"])
 

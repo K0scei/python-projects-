@@ -24,7 +24,19 @@
 		</div>
 
 		<div class="bottom-container">
-      <h3 class="bottom-title">Uploaded File: <strong>{{file}}</strong></h3>
+      <h3 class="bottom-title">Uploaded File: <br><span id="uploaded-file">{{file}}</span></h3>
+      <script>
+      const fileInput = document.getElementById("file");
+      const uploadedFile = document.getElementById("uploaded-file");
+
+      fileInput.addEventListener("change", () => {
+          if(fileInput.files.length > 0){
+              uploadedFile.textContent = fileInput.files[0].name;
+          } else {
+              uploadedFile.textContent = "";
+          }
+      });
+      </script>
 			<h3 class="bottom-title upload-txt2">Your Uploaded Files:</h3>
       <div class="file-list">
       {% if files %}
