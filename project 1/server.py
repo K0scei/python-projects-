@@ -160,12 +160,16 @@ def upload():
 		with open('./data/userdata.json', "w", encoding='utf-8') as f:
 			json.dump(data, f, indent=4)
 
+		save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+		file.save(save_path)
+
 		return render_template("upload.html", file=filename, sendto=sendto, files=user_data["uploadnames"])
 
 	return render_template("upload.html", file=None, sendto=None, files=user_data["uploadnames"])
 
 
-@app.route("/download/<filename>")
+@app.route("/download/<path:filename>") # ! path tamamen test materyali silinebilir
 def download(filename):
 	return send_from_directory(app.config["UPLOAD_FOLDER"], filename, as_attachment = True)
 
@@ -175,7 +179,13 @@ def download(filename):
 @app.route("/home")
 def home():
 	username = session.get('username')
-	return render_template("home.html", username=username)
+
+	with open('./data/userdata.json', "r", encoding='utf-8') as f:
+		data = json.load(f)
+
+	downloadables = data["users"][username]["downloadnames"]
+
+	return render_template("home.html", username=username, downloadables=downloadables)
 
 @app.route("/logout")
 def logout():

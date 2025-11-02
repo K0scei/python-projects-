@@ -5,10 +5,64 @@
 		<title>AirShare | Home</title>
 	</head>
 	<body>
+	<div id="mainOverlay"></div>
+
 		<p class="main-header">Welcome, <strong>{{ username }}</strong>.</p>
+
 		<div class="buttons">
 			<button class="home-button upload-file" onclick="window.location.href= '{{ url_for('upload') }}'">Upload File</button>
-			<button class="home-button inbox">Inbox</button>
+			<button class="home-button inbox" id="openInboxBtn">Inbox</button>
 		</div>
+
+		<div id="inboxSidebar" class="sidebar">
+			<div class="sidebar-content">
+				<a href="javascript:void(0)" class="closebtn" id="closeInboxBtn">&times;</a>
+				<h3>Inbox 📥</h3>
+
+				<div class="inbox-list">
+					{% for file in downloadables %}
+					<div class="download-item">
+						<span class="file-info">{{file.name}}</span>
+						<a href=" {{url_for('download', filename=file.name) }}" class="download-icon-link" title="Download {{file.name}}">&darr;</a>
+					</div>
+					{% else %}
+					<p class="download-item-empty">There is no downloadable files in your inbox.</p>
+					{% endfor %}
+				</div>
+
+				<p class="sidebar-footer">Press the download icon to download.</p>
+			</div>
+			</div>
+
+		<script>
+			const openBtn = document.getElementById("openInboxBtn");
+			const closeBtn = document.getElementById("closeInboxBtn");
+			const sidebar = document.getElementById("inboxSidebar");
+			const overlay = document.getElementById("mainOverlay");
+
+			const transitionDuration = 500;
+
+			function openSidebar(){
+				sidebar.style.width = "500px";
+				overlay.style.display = "block";
+
+				setTimeout(()=>{
+					sidebar.classList.add('open');
+				}, transitionDuration)
+			}
+
+			function closeSidebar(){
+				sidebar.classList.remove('open');
+
+				setTimeout(() => {
+					sidebar.style.width = "0px";
+					overlay.style.display = "none";
+				}, transitionDuration);
+			}
+
+			openBtn.addEventListener('click', openSidebar);
+			closeBtn.addEventListener('click', closeSidebar);
+			overlay.addEventListener('click', closeSidebar);
+		</script>
 	</body>
 </html>
