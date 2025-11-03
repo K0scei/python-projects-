@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory, render_template, redirect, url_for, flash, session
+from flask import Flask, request, send_from_directory, render_template, redirect, url_for, flash, session, jsonify, abort
 import socket
 import os
 import threading
@@ -58,22 +58,30 @@ def login():
 		provided_username = request.form.get('username', '').strip()
 		provided_password = request.form.get('password', '').strip()
 
-		with open('./data/userdata.json', "r", encoding='utf-8') as f:
-			data = json.load(f)
-			user = data["users"].get(provided_username)
-		if not user:
+		try:
+			with open('./data/userdata.json', "r", encoding='utf-8') as f:
+				data = json.load(f)
+		except (json.JSONDecodeError, FileNotFoundError):
+			data = {}
+
+		users_data = data.get("users", {})
+		user = users_data.get(provided_username)
+
+		if not provided_username:
 			error = "No username given! Please check your inputs!"
-		else:
-			hashed_password = user["password"]
-		if not provided_password:
+		elif not provided_password:
 			error = "No password given! Please check your inputs!"
 		elif not user:
-			error = "No user found with this username. Did you mean to sign in?"
-		elif not check_password_hash(hashed_password, provided_password):
-			error = "The password is wrong, please try again!"
+			error = "USER_NOT_FOUND"
+		else:
+			hashed_password = user.get("password")
+			if not hashed_password:
+				error = "User data corrupted. Please contact support!"
+			elif not check_password_hash(hashed_password, provided_password):
+				error = "The password is wrong, please try again!"
 
 		if not error:
-			print(f"User {provided_password} has logged in!")
+			print(f"User {provided_username} has logged in!")
 			session['username'] = provided_username
 			return redirect(url_for('home'))
 
@@ -88,7 +96,17 @@ def signup():
 		username = request.form.get('username', '').strip()
 		password = request.form.get('password', '').strip()
 
-		if not username:
+		try:
+			with open('./data/userdata.json', "r", encoding='utf-8') as f:
+				data = json.load(f)
+		except (json.JSONDecodeError, FileNotFoundError):
+			data = {}
+
+		users_data = data.get("users", {})
+
+		if username in users_data:
+			error = "USER_EXISTS_ERROR"
+		elif not username:
 			error = "The username can not be empty!"
 		elif len(username) < 4:
 			error = "The username should be more than 4 characters!"
@@ -154,27 +172,127 @@ def upload():
 
 		sendto_data = data["users"].get(sendto)
 
-		sendto_data["downloadnames"].append({"name": filename, "sendto": sendto, "uuid": str(uuid4())})
+		file_uuid = str(uuid4())
 
-		user_data["uploadnames"].append({"name": filename, "sendto": sendto, "uuid": str(uuid4())})
+		sendto_data["downloadnames"].append({"name": filename, "sentfrom": session["username"], "uuid": file_uuid})
+
+		user_data["uploadnames"].append({"name": filename, "sendto": sendto, "uuid": file_uuid})
 
 		with open('./data/userdata.json', "w", encoding='utf-8') as f:
 			json.dump(data, f, indent=4)
 
-		save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+		save_path = os.path.join(app.config['UPLOAD_FOLDER'], file_uuid)
 
 		file.save(save_path)
 
-		return render_template("upload.html", file=filename, sendto=sendto, files=user_data["uploadnames"])
+		return redirect(url_for('upload'))
 
 	return render_template("upload.html", file=None, sendto=None, files=user_data["uploadnames"])
 
 
-@app.route("/download/<path:filename>") # ! path tamamen test materyali silinebilir
-def download(filename):
-	return send_from_directory(app.config["UPLOAD_FOLDER"], filename, as_attachment = True)
+@app.route("/download/<path:file_uuid>") # ! path tamamen test materyali silinebilir
+def download(file_uuid):
+
+	with open('./data/userdata.json', 'r', encoding='utf-8') as f:
+		data = json.load(f)
+	user = session['username']
+
+	user_downloadables = data["users"][user]["downloadnames"]
+
+	file_record = next((f for f in user_downloadables if f.get("uuid") == file_uuid), None)
+
+	if not file_record:
+		abort(403, description='You do not have the permission to download this file.')
+
+	original_filename = file_record.get('name', 'unknown_file')
+
+	disk_filename = file_uuid
+
+	return send_from_directory(
+		app.config['UPLOAD_FOLDER'],
+		disk_filename,
+		as_attachment = True,
+		download_name = original_filename
+	)
 
 # özgür allahın varsa biraz whitespace bırak bu ne ya
+@app.route("/delete-file/<filename>", methods=["DELETE"])
+def delete_file(filename):
+	current_user = session.get("username")
+	if not current_user:
+		return jsonify({"success": False, "message": "Not logged in."}), 401
+
+	data_path = "./data/userdata.json"
+
+	try:
+		with open(data_path, "r", encoding="utf-8") as f:
+			data = json.load(f)
+
+		user_data = data.get("users", {}).get(current_user)
+		if not user_data:
+			return (
+				jsonify({"success": False, "message": "No user data."}),
+				404,
+			)
+
+		incoming_files = user_data.get("downloadnames", [])
+
+		file_record_to_delete = next(
+			(f for f in incoming_files if f.get("name") == filename), None
+		)
+
+		if not file_record_to_delete:
+			return (
+					jsonify(
+					{
+						"success": False,
+						"message": "The file was not sent for you.",
+					}
+					),
+				404,
+			)
+
+		file_uuid = file_record_to_delete.get("uuid")
+		sender_username = file_record_to_delete.get(
+			"sentfrom"
+		)
+		file_name = file_record_to_delete.get("name")
+
+		data["users"][current_user]["downloadnames"] = [
+			f for f in incoming_files if f.get("uuid") != file_uuid
+		]
+
+		if sender_username and sender_username in data["users"]:
+			sender_files = data["users"][sender_username].get("uploadnames", [])
+
+			data["users"][sender_username]["uploadnames"] = [
+				f for f in sender_files if f.get("uuid") != file_uuid
+			]
+
+		file_to_delete_disk_name = file_uuid
+		disk_path = os.path.join(app.config["UPLOAD_FOLDER"], file_to_delete_disk_name)
+
+		if os.path.exists(disk_path):
+			os.remove(disk_path)
+			print(f"Removed from disk: {disk_path}")
+		else:
+			print(
+				f"THE FILE WAS NOT FOUND IN THE PATH: {disk_path}"
+			)
+
+		with open(data_path, "w", encoding="utf-8") as f:
+			json.dump(data, f, indent=4)
+
+		return jsonify(
+			{
+				"success": True,
+				"message": f"'{file_name}' removed successfully.",
+			}
+		)
+
+	except Exception as e:
+		print(f"Critical Error: {e}")
+		return jsonify({"success": False, "message": f"Server Error: {e}"}), 500
 
 
 @app.route("/home")

@@ -8,7 +8,7 @@
 	<div id="mainOverlay"></div>
 
 		<p class="main-header">Welcome, <strong>{{ username }}</strong>.</p>
-
+		<p class="settings"></p>
 		<div class="buttons">
 			<button class="home-button upload-file" onclick="window.location.href= '{{ url_for('upload') }}'">Upload File</button>
 			<button class="home-button inbox" id="openInboxBtn">Inbox</button>
@@ -22,8 +22,46 @@
 				<div class="inbox-list">
 					{% for file in downloadables %}
 					<div class="download-item">
-						<span class="file-info">{{file.name}}</span>
-						<a href=" {{url_for('download', filename=file.name) }}" class="download-icon-link" title="Download {{file.name}}">&darr;</a>
+					<span class="file-info">
+						{% set max_name_length = 12 %}
+						{% set max_sender_length = 4 %}
+
+						{% set full_name = file.name %}
+						{% set parts = full_name.rsplit('.', 1) %}
+						{% set name = parts[0] %}
+						{% set extension = '.' + parts[1] if parts | length > 1 else '' %}
+						{% set filename_display = full_name %}
+
+						{% if name | length > max_name_length %}
+							{% set filename_display = name[:max_name_length] + '...' + extension %}
+						{% endif %}
+
+						{{ filename_display }}
+
+						{% if file.sentfrom %}
+							{% set sender_name = file.sentfrom %}
+							{% set sender_display = sender_name %}
+
+							{% if sender_name | length > max_sender_length %}
+								{% set sender_display = sender_name[:max_sender_length] + '...' %}
+							{% endif %}
+
+							| Sent from {{ sender_display }}
+						{% endif %}
+						<div class="file-actions">
+							<a href=" {{url_for('download', file_uuid=file.uuid) }}"
+								class="download-icon-link"
+								title="Download {{file.name}}">
+								&darr;
+							</a>
+							<a href="javascript:void(0)"
+								class="delete-icon-link"
+								title="Delete File"
+								data-filename="{{ file.name }}"
+								onclick="deleteFile(this, this.dataset.filename)">
+								&times;
+							</a>
+						</div>
 					</div>
 					{% else %}
 					<p class="download-item-empty">There is no downloadable files in your inbox.</p>
@@ -35,7 +73,7 @@
 			</div>
 
 		<script>
-			const buttons = document.getElementById("buttons")
+			const buttons = document.querySelector(".buttons")
 			const openBtn = document.getElementById("openInboxBtn");
 			const closeBtn = document.getElementById("closeInboxBtn");
 			const sidebar = document.getElementById("inboxSidebar");
@@ -43,9 +81,45 @@
 
 			const transitionDuration = 500;
 
+			function deleteFile(buttonElement, filename){ // <-- İKİNCİ PARAMETRE GELDİ
+				if (!confirm(`The file ${filename} will be permanently deleted. Continue?`)){
+					return;
+				}
+				const deleteUrl = `/delete-file/${filename}`;
+				const itemToRemove = buttonElement.closest('.download-item');
+
+				fetch(deleteUrl,{
+					method: 'DELETE',
+				})
+				.then(response => {
+					if (response.ok){
+						console.log(`"${filename}" is deleted successfully.`);
+
+						if (itemToRemove) {
+							itemToRemove.remove();
+
+							const inboxList = document.querySelector('.inbox-list');
+							if (inboxList && inboxList.children.length === 0) {
+								inboxList.innerHTML = '<p class="download-item-empty">There is no downloadable files in your inbox.</p>';
+							}
+						}
+					}
+					else{
+						return response.json().then(data => {
+							alert(`Removal Error: ${data.message || "Unkown error occured."}`);
+						})
+					}
+				})
+				.catch(error => {
+					console.error("Fetch Error: ", error)
+					alert("A problem has occured while connecting.")
+				})
+			}
+
 			function openSidebar(){
 				sidebar.style.width = "500px";
 				overlay.style.display = "block";
+				buttons.classList.add('open');
 
 				setTimeout(()=>{
 					sidebar.classList.add('open');
@@ -58,6 +132,7 @@
 				setTimeout(() => {
 					sidebar.style.width = "0px";
 					overlay.style.display = "none";
+					buttons.classList.remove('open');
 				}, transitionDuration);
 			}
 

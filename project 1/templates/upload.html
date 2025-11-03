@@ -38,16 +38,25 @@
       });
       </script>
 			<h3 class="bottom-title upload-txt2">Your Uploaded Files:</h3>
-      <div class="file-list">
-      {% if files %}
-          {% for f in files %}
-          <div class="file-item">
-              📄 {{ f }}
-          </div>
-          {% endfor %}
-      {% else %}
-          <p class="message">You have not uploaded any files yet!</p>
-      {% endif %}
+        <div class="file-list">
+            {% set max_count = 6 %}
+
+            {% if files %}
+
+                {% for f in files[-max_count:] | reverse %}
+                <div class="file-item">
+                    📄 {{ f.name }}
+                </div>
+                {% endfor %}
+
+                {% if files | length > max_count %}
+                    <p class="message show-more">... {{ files | length - max_count }} more files hidden</p>
+                {% endif %}
+
+            {% else %}
+                <p class="message">You have not uploaded any files yet!</p>
+            {% endif %}
+        </div>
       </div>
 		</div>
 	</body>

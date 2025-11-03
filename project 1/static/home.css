@@ -4,6 +4,7 @@ body, html {
 	background-color: #202020;
 	font-family: Arial, sans-serif;
 	position: relative;
+	overflow-x: hidden;
 }
 
 .main-header {
@@ -70,19 +71,18 @@ body, html {
 	transition: 0.5s;
 	color: #a8a8a8;;
 	box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-	padding-top: 20px;
-	padding-left: 20px;
 }
 
 .sidebar-content{
 	width: 500px;
-	height: 100%;
-
 	opacity: 0;
+	box-sizing: border-box;
 	transition: opacity 0.3s ease-in-out;
-
 	position: absolute;
 	right: 0;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
 }
 
 .sidebar.open .sidebar-content{
@@ -91,7 +91,7 @@ body, html {
 
 .sidebar .closebtn{
 	position: absolute;
-	top: 0;
+	top: 10px;
 	right: 25px;
 	font-size: 36px;
 	margin-left: 50px;
@@ -109,12 +109,12 @@ body, html {
 }
 
 .download-item{
-	color: #a8a8a8;;
+	color: #1b1b1b;;
 }
 
 .file-info{
 	font-size: 18px;
-	color: #454545;
+	color: #bdbdbd;
 	flex-grow: 1;
 	overflow: hidden;
 	white-space: nowrap;
@@ -124,15 +124,10 @@ body, html {
 .download-icon-link{
 	text-decoration: none;
 	font-size: 24px;
-	color: #202020;
+	color: #00BFFF;
 	margin-left: 15px;
 	padding: 0 5px;
 	line-height: 1;
-}
-
-.download-icon-link:hover{
-	background-color: #fff;
-	color: #454545;
 }
 
 #mainOverlay{
@@ -151,4 +146,30 @@ body, html {
 	padding: 10px 10px 10px 32px;
 	color: #a8a8a8;;
 	font-style: italic;
+}
+
+.buttons.open{
+	opacity: 0.5;
+	transition: opacity 0.3, transform 0.5s;
+}
+
+.buttons.open .home-button{
+	pointer-events: none;
+	cursor: default;
+}
+
+.file-info{
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	/*margin-left: 20px;*/
+}
+
+.delete-icon-link{
+	text-decoration: none;
+	font-size: 24px;
+	color: #00BFFF;
+	margin-left: 15px;
+	padding: 0 5px;
+	line-height: 1;
 }

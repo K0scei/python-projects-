@@ -1,21 +1,22 @@
 body, html {
-	height: 100%;
-	margin: 0;
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	align-items: center;
-	background-color: #202020;
-	font-family: Arial, sans-serif;
-	position: relative;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #202020;
+    font-family: Arial, sans-serif;
+    position: relative;
 }
+
 
 .title-container{
 	position: relative;
 	width: 100%;
 	text-align: center;
-	top: -40px;
-	left: -25px;
+	top: 100px;
 }
 
 .title{
@@ -23,13 +24,13 @@ body, html {
 	padding: 20px 60px;
 	font-size: 30px;
 	color: #a8a8a8;
-	justify-content: center;
 	white-space: nowrap;
 	width: max-content;
-	left: 52%; /*%52 is better than %50. i have no idea why tbh*/
-	transform: translate(-50%, -50%);
+	margin: 0 auto;
+	display: block;
 	z-index: 10;
-	top: 100px;
+	top: 0;
+	transform: translateX(20px);
 }
 
 
@@ -47,60 +48,31 @@ body, html {
 	margin: 40px;
 	top: 50px;
 }
-
-.upload-txt::placeholder{
-	text-align: center;
-}
-
+.upload-txt::placeholder{ text-align: center; }
 .submit-btn:hover, .upload-btn:hover{
 	color: #454545;
 	background-color: #FFFFFF;
 }
 
+
 .bottom-container{
 	position: relative;
 	width: 800px;
 	height: 400px;
+	margin-top: 150px;
+	transform: translateX(20px);
 }
 
-.bottom-title {
+
+.bottom-title, .upload-txt2 {
 	display: block;
-	gap: 8px;
-	align-items: center;
-	position: absolute;
-	white-space: normal;
-	top: -30px;
-	left: 34%;
+	text-align: center;
 	color: #a8a8a8;
 	font-size: 24px;
+	margin: 0 auto 20px auto;
+	position: relative;
 }
 
-.upload-txt2 {
-	position: absolute;
-	top: 70px;
-	left: 49%;
-	transform: translateX(-50%);
-	color: #a8a8a8;
-	font-size: 24px;
-}
-
-
-.message{
-	position: absolute;
-	display: inline-block;
-	font-size: 20px;
-	padding: 20px 60px;
-	left: 190px;
-	top: 140px;
-	color:#a8a8a8;
-	white-space: nowrap;
-}
-
-.error-msg{
-	color: rgba(180, 0, 0, 1);
-	font-size: 20px;
-	margin-left: 50px;
-}
 
 #uploaded-file {
 	display: block;
@@ -109,6 +81,37 @@ body, html {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	text-align: middle;
-	direction: ltr;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.file-list{
+	position: absolute;
+	top: 120px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	color: #a8a8a8;
+	font-size: 18px;
+	max-width: 90%;
+	left: 400px;
+}
+
+.file-item {
+	width: 100%;
+	text-align: center;
+}
+.message{
+	font-size: 20px;
+	color:#a8a8a8;
+	white-space: nowrap;
+	padding: 10px;
+}
+.error-msg{
+	color: rgba(180, 0, 0, 1);
+	font-size: 20px;
+	margin-left: 50px;
 }

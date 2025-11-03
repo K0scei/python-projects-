@@ -10,7 +10,13 @@
 		<input class="login txt logintxt" type="text" name="username" placeholder="Username">
 		<input class="login txt password txt" type="password" name="password" placeholder="Password">
 		{% if error %}
-			<p class="error-msg">{{ error }}</p>
+			<p class="error-msg">
+				{% if error == "USER_NOT_FOUND" %}
+					No user found with this username. <a href="{{ url_for('signup') }}">Did you mean to <strong>Sign Up?</strong></a>
+				{% else %}
+					{{ error }}
+				{% endif %}
+			</p>
 		{% endif %}
 	</div>
 		<button class="submit-btn" type="submit">Log In</button>
