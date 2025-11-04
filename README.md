@@ -55,6 +55,7 @@ The output will give you the local link to the website opened. (e.g. 127.0.0.1:5
 
 <h1>Folder Structure</h1>
 
+```
 AirShare/<br>
 │<br>
 ├── server.py<br>
@@ -79,3 +80,4 @@ AirShare/<br>
 │   └── userdata.json (this is not feasable, but for beta versions this can make do.)<br>
 │<br>
 └── uploads/
+```
