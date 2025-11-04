@@ -55,27 +55,27 @@ The output will give you the local link to the website opened. (e.g. 127.0.0.1:5
 
 <h1>Folder Structure</h1>
 
-AirShare/
-│
-├── server.py
-├── requirements.txt
-├── .gitignore
-│
-├── static/
-│   ├── index.css
-│   ├── home.css
-│   ├── upload.css
-│   ├── signup.css
-│   └── login.css
-│
-├── templates/
-│   ├── index.html
-│   ├── home.html
-│   ├── upload.html
-│   ├── signup.html
-│   └── login.html
-│
-├── data/
-│   └── userdata.json (this is not feasable, but for beta versions this can make do.)
-│
+AirShare/<br>
+│<br>
+├── server.py<br>
+├── requirements.txt<br>
+├── .gitignore<br>
+│<br>
+├── static/<br>
+│   ├── index.css<br>
+│   ├── home.css<br>
+│   ├── upload.css<br>
+│   ├── signup.css<br>
+│   └── login.css<br>
+│<br>
+├── templates/<br>
+│   ├── index.html<br>
+│   ├── home.html<br>
+│   ├── upload.html<br>
+│   ├── signup.html<br>
+│   └── login.html<br>
+│<br>
+├── data/<br>
+│   └── userdata.json (this is not feasable, but for beta versions this can make do.)<br>
+│<br>
 └── uploads/
