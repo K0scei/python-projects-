@@ -13,7 +13,9 @@ AirShare guarantees secrecy and privacy among sent files and sender/reciever.
 
 <h1>Dependency List</h1>
 Python 3.10 or higher,
+
 Flask web framework
+
 A modern web browser
 
 ---
