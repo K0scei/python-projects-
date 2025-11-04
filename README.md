@@ -25,7 +25,8 @@ A modern web browser
 Firstly, open your terminal and clone the repo:
 
 ```bash
-git clone github.com/K0scei/python-projects-/
+git clone https://github.com/K0scei/python-projects-.git
+
 cd ./python-projects-
 ```
 
