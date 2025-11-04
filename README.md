@@ -7,5 +7,13 @@ AirShare guarantees secrecy and privacy among sent files and sender/reciever.
 
 <h1>How to run it?</h1>
 
-Firstly, open your terminal and venv`pip install requirements.txt`\
-To run the file locally, simply use the command venv`flask --app ./server.py run`
+Firstly, open your terminal and run the command 
+
+venv```pip install requirements.txt```
+
+
+To run the file locally, simply use the command: 
+
+venv```flask --app ./server.py run```
+
+The output will give you the local link to the website opened.
